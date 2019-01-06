@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import os.path as osp
 import json
@@ -37,29 +38,29 @@ def write_json(input_txt, output_json, class_file, separator_key='Enter Image Pa
 
                     # get text between two substrings (SEPARATOR_KEY and IMG_FORMAT)
                     image_path = re.search(separator_key + '(.*)' + img_format, line)
-                    # get the image name (the final component of a image_path)
-                    # e.g., from 'data/horses_1' to 'horses_1'
                     image_id = get_image_id_from_path(image_path.group(1))
+                    
                     isReading = True
                 elif isReading:
                     # split line on first occurrence of the character ':' and '%'
                     class_name, info = line.split(':', 1)
                     #class_name = class_name.replace(' ', '_')
-                    confidence, bbox = info.split('%', 1)
+                    confidence, bbox_info = info.split('%', 1)
 
-                    # Skip negelected bboxes with no coordinates
-                    if len(bbox) < 2:
-                        continue
-                    # get all the coordinates of the bounding box
-                    bbox = bbox.replace(')','') # remove the character ')'
-                    # go through each of the parts of the string and check if it is a digit
-                    left, top, width, height = [int(s) for s in bbox.split() if s.lstrip('-').isdigit()]
-                    right = left + width
-                    bottom = top + height
+                    # Found detection with same bbox with less class score (not best class)
+                    if len(bbox_info) > 1:
+                        # get all the coordinates of the bounding box
+                        bbox_info = bbox_info.replace(')','') # remove the character ')'
+                        bbox_info = bbox_info.split()
+
+                        # go through each of the parts of the string and check if it is a digit
+                        left, top, width, height = bbox_info[1], bbox_info[3], bbox_info[5], bbox_info[7]
+                        right = left + width
+                        bottom = top + height
 
                     category_id = cls2id[class_name]
-                    bbox = [int(s) for s in bbox.split() if s.lstrip('-').isdigit()]
-                    score = int(confidence) / 100
+                    bbox = [float(left), float(top), float(width), float(height)]
+                    score = float(confidence) / 100
 
                     res = create_results_entry(image_id, category_id, bbox, score)
                     json.dump(res, outfile, indent=4, separators=(',', ':'))
