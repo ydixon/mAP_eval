@@ -1,14 +1,14 @@
 # mAP_eval (In progress)
 
 Goals:
-1. Convert Yolo Darknet Ground Truth Files to pycocotools json
-2. Convert Yolo Darknet Detection Files to pycocotools json
+1. Convert Yolo Darknet Ground Truth Files to pycocotools json (Done)
+2. Convert Yolo Darknet Detection Files to pycocotools json (Done)
 3. Convert Yolo Darknet Ground Truth/Detection Files to */groundtruths /detections* folder usable by [rafaelpadilla/Object-Detection-Metrics](https://github.com/rafaelpadilla/Object-Detection-Metrics)
 4. Customizable Ground Truth/Detection format for custom datasets
 
 Current state:
 Verifying mAP for the 5k validation dataset with results generated from [AlexeyAB/darknet](https://github.com/AlexeyAB/darknet) .  
-`./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -thresh 0.005 -dont_show -ext_output < /home/dickson/data/coco/5k.txt > result.txt`  
+`./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -thresh 0.005 -dont_show -ext_output < /5k.txt > result.txt`  
 
 Refer to demo.ipynb for details
 
